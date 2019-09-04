@@ -1,14 +1,9 @@
 #!groovy
 
-/*
-def prefix = "9449"
+//def prefix = "9449"
 
-def devTag      = "0.0-0"
-def prodTag     = "0.0"
-
-def devProject  = "${prefix}-tasks-dev"
-def prodProject = "${prefix}-tasks-prod"
-*/
+//def devProject  = "${prefix}-tasks-dev"
+//def prodProject = "${prefix}-tasks-prod"
 
 podTemplate(
   label: "skopeo-pod",
@@ -33,11 +28,6 @@ podTemplate(
     // Checkout Source Code.
     stage('Checkout Source') {
       checkout scm
-
-      script {
-        devTag  = "${version}-" + currentBuild.number
-        prodTag = "${version}"
-      }
     }
 
     // Build the Tasks Service
@@ -46,7 +36,15 @@ podTemplate(
       // and not inside the scope of a stage - otherwise they would not
       // be accessible from other stages.
       // Extract version from the pom.xml
+      def devTag      = "0.0-0"
+      def prodTag     = "0.0"
+
       def version = getVersionFromPom("pom.xml")
+
+      devTag  = "${version}-" + currentBuild.number
+      prodTag = "${version}"
+
+
 
       // Using Maven build the war file
       // Do not run tests in this step
@@ -83,15 +81,16 @@ podTemplate(
       stage('Build and Tag OpenShift Image') {
         //echo "Building OpenShift container image tasks:${devTag}"
 
+        /*
         script{
           openshift.withCluster() {/*
               openshift.withProject("${devProject}") {
                   openshift.selector("bc", "tasks").startBuild("--from-file=http://nexus3.${prefix}-nexus.svc.cluster.local:8081/repository/releases/org/jboss/quickstarts/eap/tasks/${prodTag}/tasks-${prodTag}.war", "--wait=true")
                     
                   openshift.tag("tasks:latest", "tasks:${devTag}")
-              }*/
+              }
           }
-        }
+        }*/
       }
 
       // Deploy the built image to the Development Environment.
