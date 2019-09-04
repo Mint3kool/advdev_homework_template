@@ -168,7 +168,6 @@ podTemplate(
             dc.spec.template.spec.containers[0].image="docker://nexus3-registry.gpte-hw-cicd.svc.cluster.local:5000/${devProject}/tasks:${prodTag}"
             
             openshift.apply(dc)
-
             openshift.selector("configmap", "${destapp}-config").delete()
 
             def configmap = openshift.create("configmap", "${destapp}-config", "--from-file=./configuration/application-users.properties", "--from-file=./configuration/application-roles.properties")
@@ -183,6 +182,7 @@ podTemplate(
             while (rc_prod.spec.replicas != rc_prod.status.readyReplicas) {
               sleep 5
               rc_prod = openshift.selector("rc", "${destapp}-${dc_version}").object()
+            }
           }
         }
       }
