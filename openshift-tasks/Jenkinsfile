@@ -2,9 +2,6 @@
 
 //def prefix = "9449"
 
-//def devProject  = "${prefix}-tasks-dev"
-//def prodProject = "${prefix}-tasks-prod"
-
 podTemplate(
   label: "skopeo-pod",
   cloud: "openshift",
@@ -24,6 +21,13 @@ podTemplate(
     // Define Maven Command to point to the correct
     // settings for our Nexus installation
     def mvnCmd = "mvn -s ../nexus_settings.xml"
+
+    def prefix="9449"
+
+    def devProject  = "${prefix}-tasks-dev"
+    def prodProject = "${prefix}-tasks-prod"
+
+
 
     // Checkout Source Code.
     stage('Checkout Source') {
