@@ -150,6 +150,41 @@ podTemplate(
         //      Set Image, Set VERSION
         //      Deploy into the other application
         //      Make sure the application is running and ready before proceeding
+        openshift.withCluster() {
+          openshift.withProject("${prodProject}") {
+            activeapp=openshift.selector("route", "tasks").object().spec.to.name
+
+            if (activeapp == "tasks-green") {
+              destapp="tasks-blue"
+            } else {
+              destapp="tasks-green"
+            }
+
+            echo "Active app: " + activeapp
+            echo "Dest app: " + destapp
+
+            def dc = openshift.selector("dc/${destapp}").object()
+
+            dc.spec.template.spec.containers[0].image="docker://nexus3-registry.gpte-hw-cicd.svc.cluster.local:5000/${devProject}/tasks:${prodTag}"
+            
+            openshift.apply(dc)
+
+            openshift.selector("configmap", "${destapp}-config").delete()
+
+            def configmap = openshift.create("configmap", "${destapp}-config", "--from-file=./configuration/application-users.properties", "--from-file=./configuration/application-roles.properties")
+
+            openshift.selector("dc", "${destapp}").rollout().latest()
+            def dc_prod = openshift.selector("dc", "${destapp}").object()
+            def dc_version = dc_prod.status.latestVersion
+            def rc_prod = openshift.selector("rc", "${destapp}-${dc_version}").object()
+
+            echo "Waiting for ${destapp} to be ready"
+       
+            while (rc_prod.spec.replicas != rc_prod.status.readyReplicas) {
+              sleep 5
+              rc_prod = openshift.selector("rc", "${destapp}-${dc_version}").object()
+          }
+        }
       }
 
       stage('Switch over to new Version') {
