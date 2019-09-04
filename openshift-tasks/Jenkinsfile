@@ -74,7 +74,7 @@ podTemplate(
       stage('Publish to Nexus') {
         echo "Publish to Nexus with devTag=${devTag} and prodTag=${prodTag}"
 
-        sh "$mvnCmd deploy -DskipTests=true -DaltDeploymentRepository=nexus::default::https://nexus3-registry.gpte-hw-cicd.svc.cluster.local:5000/releases"
+        sh "$mvnCmd deploy -DskipTests=true -DaltDeploymentRepository=nexus::default::http://nexus3-registry.gpte-hw-cicd.svc.cluster.local:5000/releases"
       }
 
       // Build the OpenShift Image in OpenShift and tag it.
