@@ -72,7 +72,7 @@ podTemplate(
 
       // Publish the built war file to Nexus
       stage('Publish to Nexus') {
-        echo "Publish to Nexus"
+        echo "Publish to Nexus with devTag=${devTag} and prodTag=${prodTag}"
 
         sh "$mvnCmd deploy -DskipTests=true -DaltDeploymentRepository=nexus::default::https://nexus3-registry-gpte-hw-cicd.apps.na311.openshift.opentlc.com"
       }
