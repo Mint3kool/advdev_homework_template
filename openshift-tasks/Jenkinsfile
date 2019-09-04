@@ -87,7 +87,7 @@ podTemplate(
 
           openshift.withCluster() {
               openshift.withProject("${devProject}") {
-                  openshift.selector("bc", "tasks").startBuild("--from-file=http://nexus3.gpte-hw-cicd.svc.cluster.local:8081/repository/releases/org/jboss/quickstarts/eap/tasks/${prodTag}/tasks-${prodTag}.war", "--wait=true")
+                  openshift.selector("bc", "tasks").startBuild("--from-file=./target/openshift-tasks.war", "--wait=true")
                     
                   openshift.tag("tasks:latest", "tasks:${devTag}")
               }
