@@ -15,7 +15,7 @@ echo "Setting up Jenkins in project ${GUID}-jenkins from Git Repo ${REPO} for Cl
 # Set up Jenkins with sufficient resources
 #oc new-project ${GUID}-jenkins --display-name="${GUID} Homework Jenkins"
 
-oc new-app jenkins-persistent --param ENABLE_OAUTH=false --param MEMORY_LIMIT=2Gi --param VOLUME_CAPACITY=4Gi --param DISABLE_ADMINISTRATIVE_MONITORS=true
+oc new-app jenkins-persistent --param ENABLE_OAUTH=false --param MEMORY_LIMIT=2Gi --param VOLUME_CAPACITY=4Gi --param DISABLE_ADMINISTRATIVE_MONITORS=true -n ${GUID}-jenkins
 
 # Create custom agent container image with skopeo
 oc new-build -D $'FROM docker.io/openshift/jenkins-agent-maven-35-centos7:v3.11\n
@@ -24,7 +24,7 @@ oc new-build -D $'FROM docker.io/openshift/jenkins-agent-maven-35-centos7:v3.11\
 
 # Create pipeline build config pointing to the ${REPO} with contextDir `openshift-tasks`
 #oc create -f ${REPO} --filename=../openshift-tasks
-oc new-app https://github.com/Mint3kool/advdev_homework_template --context-dir=openshift-tasks
+oc new-app https://github.com/Mint3kool/advdev_homework_template --context-dir=openshift-tasks -n ${GUID}-jenkins
 
 # # Make sure that Jenkins is fully up and running before proceeding!
 while : ; do

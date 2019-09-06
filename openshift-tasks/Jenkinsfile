@@ -9,7 +9,7 @@ podTemplate(
   containers: [
     containerTemplate(
       name: "jnlp",
-      image: "docker-registry.default.svc:5000/9449-jenkins/jenkins-agent-appdev",
+      image: "docker-registry.default.svc:5000/98e9-jenkins/jenkins-agent-appdev",
       resourceRequestMemory: "1Gi",
       resourceLimitMemory: "2Gi",
       resourceRequestCpu: "1",
@@ -22,7 +22,7 @@ podTemplate(
     // settings for our Nexus installation
     def mvnCmd = "mvn -s ../nexus_settings.xml"
 
-    def prefix="9449"
+    def prefix="98e9"
 
     def devProject  = "${prefix}-tasks-dev"
     def prodProject = "${prefix}-tasks-prod"
